@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Werkstatt im Blick – DEMO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0A2A5E;--text:#0F2A4A;--muted:#5B6B7E;--line:#D5DEE8;--bg:#EEF3F8;--rot:#B8183A;--orange:#FF9A2E;--gruen:#0E7A3E;
+--sans:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;--mono:'IBM Plex Mono',Consolas,'Cascadia Mono',Menlo,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:var(--sans);font-size:clamp(14px,1.25vw,50px);line-height:1.3}
+#app{min-height:100vh;display:flex;flex-direction:column}
+.mono{font-family:var(--mono)}
+.kopf{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5em 1.2em;padding:.4em 1em;background:#fff;border-top:.22em solid var(--navy);border-bottom:.15em solid #BFE0F2}
+.marke{display:flex;align-items:center;gap:.7em}
+.logo{display:flex;align-items:center;justify-content:center;height:1.9em;padding:0 .7em;border:1px dashed #9DB3CB;border-radius:.25em;font-size:.5em;font-weight:600;letter-spacing:.06em;color:var(--muted)}
+.firma{font-size:.95em;font-weight:800;color:var(--navy)}.firma span{font-weight:500;color:#3D4F66}
+.seg{display:flex;gap:.2em;padding:.2em;background:#E8F0F8;border:1px solid #C3D4E6;border-radius:.45em;font-size:.55em}
+.seg button{font:inherit;font-weight:600;border:0;border-radius:.35em;padding:.5em .95em;cursor:pointer;min-height:44px;background:transparent;color:var(--text)}
+.seg button.aktiv{background:var(--navy);color:#fff}
+button:focus-visible{outline:3px solid #0B5CAD;outline-offset:2px}
+.band{margin:.5em 1em 0;background:var(--navy);color:#fff;border-radius:.55em;border-bottom:.2em solid #9ED3EC;padding:.35em 1.1em;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.3em 1.5em}
+.band h1{margin:0;font-size:1.25em;font-weight:800;letter-spacing:-.02em}
+.band .sub{font-size:.62em;font-weight:500;color:#CFE0F2}
+.band .titel{display:flex;align-items:baseline;flex-wrap:wrap;gap:.2em .9em}
+.band .zeit{display:flex;align-items:baseline;gap:.7em;font-family:var(--mono);font-weight:700}
+.band .zeit .d{font-size:.85em;color:#CFE0F2}.band .zeit .u{font-size:1.15em}
+.veraltet{margin:.4em 1em 0;background:#B05400;color:#fff;border-radius:.4em;padding:.3em 1em;font-size:.75em;font-weight:700}
+main{flex:1 1 auto;display:flex;flex-wrap:wrap;gap:.7em;padding:.6em 1em .25em;align-items:stretch}
+.spalte{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;background:#F7FAFC;border:1px solid var(--line);border-radius:.55em;overflow:hidden}
+.skopf{display:flex;align-items:center;gap:.6em;padding:.5em .8em}
+.skopf .nr{font-family:var(--mono);font-size:.55em;font-weight:700;border:1.5px solid currentColor;border-radius:.3em;padding:.2em .4em}
+.skopf h2{margin:0;font-size:.95em;font-weight:700}.skopf .st{font-size:.55em}
+.skopf .tx{flex:1 1 auto;min-width:0}
+.skopf .seite{font-family:var(--mono);font-size:.8em;font-weight:700;border:2px solid currentColor;border-radius:.3em;padding:.1em .4em;white-space:nowrap}
+.skopf .anz{font-family:var(--mono);font-size:1.1em;font-weight:700;background:#fff;border-radius:.3em;min-width:1.6em;text-align:center;padding:.05em .25em}
+.balken{height:.22em}.balken div{height:100%}
+.liste{flex:1 1 auto;display:flex;flex-direction:column;gap:.25em;padding:.45em}
+.liste.g{gap:.22em}
+.karte{font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%;display:block;line-height:1.15;background:#fff;border:1px solid var(--line);border-radius:.45em;padding:.28em .6em .28em .35em}
+.karte.g{padding:.25em .6em .25em .35em}
+.karte.neu{border:.14em solid #0B5CAD}
+.karte:hover{box-shadow:0 .3em .9em rgba(10,42,94,.12)}
+.reihe{display:flex;gap:.55em;align-items:stretch}
+.badge{display:flex;align-items:center;justify-content:center;min-width:2.7em;padding:0 .25em;background:var(--navy);color:#fff;border-radius:.3em;font-family:var(--mono);font-size:.95em;font-weight:700;flex:none}
+.badge.ds{min-width:4.6em;padding:0 .45em;font-size:.8em;white-space:nowrap}
+.inhalt{flex:1 1 auto;min-width:0}
+.zeile1{display:flex;justify-content:space-between;align-items:center;gap:.5em}
+.gross{font-family:var(--mono);font-weight:700;font-size:1.3em;line-height:1.1;letter-spacing:-.01em;white-space:nowrap}
+.lab{font-size:.54em;color:var(--muted)}
+.wert{font-size:.7em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wert.n{font-weight:600}
+.raster{display:grid;gap:0 .7em;margin-top:.2em}
+.r3{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1.2fr)}
+.r4{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr) minmax(0,.95fr)}
+.r2{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0}
+.rechts{text-align:right;flex:none}
+.dtag{font-size:.42em;font-weight:700;letter-spacing:.08em;color:#fff;background:#8A4B0B;border-radius:.3em;padding:.15em .4em;align-self:center}
+.leer{margin:.6em;color:var(--muted);font-size:.7em}
+footer{display:flex;justify-content:space-between;font-size:.5em;color:var(--muted);padding:.1em 2em .5em}
+.ov{position:fixed;inset:0;background:rgba(10,42,94,.55);display:flex;align-items:center;justify-content:center;padding:1em;z-index:10}
+.dlg{background:#fff;border-radius:.6em;width:100%;max-width:48em;max-height:90vh;overflow:auto;font-size:.64em;box-shadow:0 1.5em 3em rgba(10,42,94,.3)}
+.dkopf{display:flex;justify-content:space-between;align-items:center;gap:1em;flex-wrap:wrap;background:var(--navy);color:#fff;padding:.9em 1.2em;border-bottom:.2em solid #9ED3EC}
+.dkopf .ey{font-family:var(--mono);font-size:.8em;letter-spacing:.18em;color:#9ED3EC}
+.dkopf h2{margin:0;font-size:1.5em;font-family:var(--mono)}
+.chip{font-weight:700;color:var(--text);background:#fff;border-radius:1em;padding:.2em .75em}
+.chip i{display:inline-block;width:.55em;height:.55em;border-radius:50%;margin-right:.35em}
+.btn{font:inherit;font-weight:600;color:var(--text);background:#E8F0F8;border:1px solid #C3D4E6;border-radius:.4em;padding:.55em .95em;cursor:pointer;min-height:44px}
+.dbody{padding:1em 1.2em 1.3em}
+.felder{display:grid;grid-template-columns:repeat(auto-fit,minmax(14em,1fr));gap:.7em 1.5em}
+.felder .l{color:#5B6B7E;font-size:.88em}.felder .v{font-weight:600}
+.dbody h3{margin:1.2em 0 .4em;font-size:1.05em;color:var(--navy)}
+.dsz{display:flex;flex-wrap:wrap;gap:.2em 1.2em;padding:.45em 0;border-top:1px solid #E3EAF2}
+.notiz{margin:0 0 .3em;padding:.5em .7em;background:#F4F8FC;border-radius:.35em}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// Minimaler Ersatz für die Prototyp-Laufzeit: setState rendert neu.
+class DCLogic { constructor(props) { this.props = props || {}; this.state = {}; } setState(p) { Object.assign(this.state, typeof p === 'function' ? p(this.state) : p); zeichnen(); } }
+// ===== Statuslogik und Demo-Daten (identisch mit dem geprüften Prototyp) =====
+
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    const jetzt = Date.now();
+    const daten = this.demoDaten(this.heute());
+    this.state = Object.assign({}, this.state || {}, {
+      quelle: daten, anzeige: this.klon(daten), letzterSync: jetzt, letzterVersuch: jetzt, jetzt: jetzt,
+      verbindung: true, ansicht: 'tv', detail: null, suche: '', fTech: '', fTyp: '', fKunde: '', fStatus: 'aktiv',
+      simTech: 'M. Huber', geaendert: null, seitenTick: 0,
+      log: [{ zeit: this.uhr(jetzt), text: 'Demo gestartet – synthetische Testdaten geladen', fehler: false }]
+    });
+  }
+  componentDidMount() { this.timer = setInterval(() => this.tick(), 1000); }
+  componentWillUnmount() { clearInterval(this.timer); }
+
+  // ===== Konfiguration =====
+  cfg() {
+    const p = this.props || {};
+    return {
+      heute: this.heute(),
+      kundeAufTv: p.kundeAufTv ?? true,
+      karten: {
+        rot: Math.max(1, p.kartenRot ?? 8),
+        orange: Math.max(1, p.kartenOrange ?? 8),
+        gruen: Math.max(1, p.kartenGruen ?? 12)
+      },
+      seitenwechselSek: Math.max(5, p.seitenwechselSek ?? 15),
+      gruenAnzeigeTage: Math.max(0, p.gruenAnzeigeTage ?? 7),
+      syncIntervallSek: Math.max(5, p.syncIntervallSek ?? 30),
+      statusZuordnung: this.statusZuordnung()
+    };
+  }
+  // DEMO-Platzhalter: echte CRM-Statuswerte werden im Live-Betrieb hier eingetragen.
+  statusZuordnung() {
+    return {
+      servicemeldung: { 'Aktiv': 'offen', 'Gelöst': 'geschlossen', 'Storniert': 'storniert' },
+      dispatch: { 'Zugewiesen': 'offen', 'In Arbeit': 'offen', 'Warten auf Freigabe': 'offen', 'Abgeschlossen': 'geschlossen', 'Storniert': 'storniert' }
+    };
+  }
+
+  // ===== Hilfsfunktionen =====
+  klon(o) { return JSON.parse(JSON.stringify(o)); }
+  zwei(n) { return String(n).padStart(2, '0'); }
+  heute() { const d = new Date(); return d.getFullYear() + '-' + this.zwei(d.getMonth() + 1) + '-' + this.zwei(d.getDate()); }
+  uhr(ms) { const d = new Date(ms); return this.zwei(d.getHours()) + ':' + this.zwei(d.getMinutes()) + ':' + this.zwei(d.getSeconds()); }
+  istDatum(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
+  tageZwischen(von, bis) {
+    const a = von.split('-').map(Number), b = bis.split('-').map(Number);
+    return Math.round((Date.UTC(b[0], b[1] - 1, b[2]) - Date.UTC(a[0], a[1] - 1, a[2])) / 86400000);
+  }
+  minusTage(datum, n) {
+    const p = datum.split('-').map(Number);
+    const d = new Date(Date.UTC(p[0], p[1] - 1, p[2] - n));
+    return d.getUTCFullYear() + '-' + this.zwei(d.getUTCMonth() + 1) + '-' + this.zwei(d.getUTCDate());
+  }
+  datumText(s) { if (!this.istDatum(s)) return '–'; const p = s.split('-'); return p[2] + '.' + p[1] + '.' + p[0]; }
+  maxDatum(l) { const g = l.filter(x => this.istDatum(x)).sort(); return g.length ? g[g.length - 1] : null; }
+  minDatum(l) { const g = l.filter(x => this.istDatum(x)).sort(); return g.length ? g[0] : null; }
+  label(sp) { return { rot: 'Wareneingang', orange: 'In Bearbeitung', gruen: 'Ausgang', klaerung: 'Klärungsfall', archiv: 'Archiviert', storniert: 'Storniert' }[sp] || sp; }
+  farbname(sp) { return { rot: 'ROT', orange: 'ORANGE', gruen: 'GRÜN', klaerung: 'KLÄRUNGSFALL', archiv: 'ARCHIVIERT', storniert: 'STORNIERT' }[sp] || sp; }
+  farbe(sp) { return { rot: '#B8183A', orange: '#B05400', gruen: '#0E7A3E', klaerung: '#5B3FA8', archiv: '#5B6B7E', storniert: '#5B6B7E' }[sp] || '#0F2A4A'; }
+  katLabel(k) { return { offen: 'offen', geschlossen: 'geschlossen', storniert: 'storniert (ignoriert)' }[k] || k; }
+
+  // ===== Zentrale Statuslogik =====
+  // Eine Karte pro Servicemeldung. Spalte wird bei jeder Aktualisierung komplett neu berechnet.
+  bewerte(daten, cfg) {
+    const smZ = cfg.statusZuordnung.servicemeldung, dsZ = cfg.statusZuordnung.dispatch;
+    const sms = (daten && daten.servicemeldungen) || [], dss = (daten && daten.dispatches) || [];
+    const anzahlNr = {};
+    sms.forEach(sm => { if (sm && sm.nr) anzahlNr[sm.nr] = (anzahlNr[sm.nr] || 0) + 1; });
+    const proSm = {}; const eintraege = [];
+    dss.forEach(d => {
+      if (d && d.smNr && anzahlNr[d.smNr]) (proSm[d.smNr] = proSm[d.smNr] || []).push(d);
+      else eintraege.push(this.klaerungDispatch(d || {}, dsZ));
+    });
+    sms.forEach((sm, i) => eintraege.push(this.bewerteSm(sm || {}, i, proSm[sm && sm.nr] || [], anzahlNr, smZ, dsZ, cfg)));
+    eintraege.sort((a, b) => {
+      const x = a.wareneingang || '9999-99-99', y = b.wareneingang || '9999-99-99';
+      return x < y ? -1 : x > y ? 1 : String(a.key).localeCompare(String(b.key));
+    });
+    const z = { rot: 0, orange: 0, gruen: 0, klaerung: 0, archiv: 0, storniert: 0 };
+    eintraege.forEach(e => { z[e.spalte]++; });
+    z.gesamt = z.rot + z.orange + z.gruen;
+    return { eintraege, zaehler: z };
+  }
+  bewerteSm(sm, i, ds, anzahlNr, smZ, dsZ, cfg) {
+    const dispatches = ds.map(d => Object.assign({}, d, { kat: dsZ[d.status] || null }))
+      .sort((a, b) => String(a.erstellt || '').localeCompare(String(b.erstellt || '')) || String(a.nr).localeCompare(String(b.nr)));
+    const smKat = smZ[sm.status] || null;
+    const fehlend = [];
+    if (!sm.nr) fehlend.push('Servicemeldungsnummer');
+    if (!this.istDatum(sm.wareneingang)) fehlend.push('Wareneingangsdatum');
+    if (!sm.geraet && !sm.modell) fehlend.push('Gerät/Modell');
+    const unbekannt = dispatches.filter(d => !d.kat);
+    const gueltig = dispatches.filter(d => d.kat && d.kat !== 'storniert');
+    const offen = gueltig.filter(d => d.kat === 'offen');
+    const zu = gueltig.filter(d => d.kat === 'geschlossen');
+    let spalte, grund = null; const hinweise = [];
+    if (sm.nr && anzahlNr[sm.nr] > 1) { spalte = 'klaerung'; grund = 'Servicemeldungsnummer mehrfach vorhanden'; }
+    else if (!smKat) { spalte = 'klaerung'; grund = 'Unbekannter Servicemeldungs-Status „' + (sm.status || 'leer') + '“'; }
+    else if (fehlend.length) { spalte = 'klaerung'; grund = 'Pflichtdaten fehlen: ' + fehlend.join(', '); }
+    else if (unbekannt.length) { spalte = 'klaerung'; grund = 'Unbekannter Dispatch-Status: ' + unbekannt.map(d => d.nr + ' „' + (d.status || 'leer') + '“').join(', '); }
+    else if (smKat === 'storniert') {
+      if (offen.length) { spalte = 'klaerung'; grund = 'Servicemeldung storniert, aber Dispatch noch offen'; }
+      else spalte = 'storniert';
+    }
+    else if (offen.length) {
+      spalte = 'orange';
+      if (smKat === 'geschlossen') hinweise.push('SM geschlossen – Dispatch offen');
+      if (offen.length > 1) hinweise.push(offen.length + ' Dispatches offen');
+    }
+    else if (zu.length) {
+      const abschluss = this.maxDatum(zu.map(d => d.abgeschlossen));
+      if (!abschluss) { spalte = 'klaerung'; grund = 'Dispatch geschlossen, aber Abschlussdatum fehlt'; }
+      else if (this.istDatum(sm.warenausgang)) { spalte = 'archiv'; grund = 'Warenausgang gebucht'; }
+      else if (this.tageZwischen(abschluss, cfg.heute) > cfg.gruenAnzeigeTage) { spalte = 'archiv'; grund = 'Seit mehr als ' + cfg.gruenAnzeigeTage + ' Tagen abgeschlossen'; }
+      else spalte = 'gruen';
+    }
+    else if (smKat === 'geschlossen') { spalte = 'klaerung'; grund = 'Servicemeldung geschlossen, aber kein Dispatch vorhanden'; }
+    else spalte = 'rot';
+
+    const zuSort = zu.slice().sort((a, b) => String(a.abgeschlossen || '').localeCompare(String(b.abgeschlossen || '')));
+    const haupt = offen.length ? offen[offen.length - 1] : (zuSort.length ? zuSort[zuSort.length - 1] : (dispatches[dispatches.length - 1] || null));
+    const fertig = spalte === 'gruen' || spalte === 'archiv';
+    const we = this.istDatum(sm.wareneingang) ? sm.wareneingang : null;
+    const wa = this.istDatum(sm.warenausgang) ? sm.warenausgang : null;
+    return {
+      key: (sm.nr && anzahlNr[sm.nr] === 1) ? sm.nr : (sm.nr || 'ohne-Nr') + '#' + i,
+      typ: 'sm', smNr: sm.nr || '–', geraet: sm.geraet || '', modell: sm.modell || '',
+      geraetText: [sm.geraet, sm.modell].filter(Boolean).join(' ') || '–',
+      sn: sm.sn || '–', sw: sm.sw || '–', kunde: sm.kunde || '–', kontakt: sm.kontakt || '–', fehler: sm.fehler || '–',
+      smStatus: sm.status || '–', smKat: smKat,
+      wareneingang: we, standzeit: we ? this.tageZwischen(we, cfg.heute) : null,
+      bearbeitungsbeginn: this.minDatum(gueltig.map(d => d.erstellt)),
+      dispatchAbschluss: fertig ? this.maxDatum(zu.map(d => d.abgeschlossen)) : null,
+      warenausgang: wa, standzeitAusgang: we && wa ? this.tageZwischen(we, wa) : null,
+      spalte: spalte, grund: grund, hinweise: hinweise, dispatches: dispatches, offeneAnzahl: offen.length,
+      haupt: haupt, dispatchNr: haupt ? haupt.nr : '–', techniker: haupt && haupt.techniker ? haupt.techniker : '–',
+      unterstatus: haupt && haupt.kat === 'offen' && haupt.unterstatus ? haupt.unterstatus : '',
+      abschlussgrund: fertig && haupt ? (haupt.abschlussgrund || 'ohne Angabe') : '',
+      notizen: sm.notizen || []
+    };
+  }
+  klaerungDispatch(d, dsZ) {
+    return {
+      key: 'DS:' + (d.nr || '?'), typ: 'ds', smNr: d.smNr || '–', geraet: '', modell: '', geraetText: '–', sn: '–', sw: '–', kunde: '–', kontakt: '–', fehler: '–',
+      smStatus: '–', smKat: null, wareneingang: null, standzeit: null, bearbeitungsbeginn: this.istDatum(d.erstellt) ? d.erstellt : null,
+      dispatchAbschluss: null, warenausgang: null, standzeitAusgang: null, spalte: 'klaerung',
+      grund: 'Dispatch ohne zuordenbare Servicemeldung (Referenz: ' + (d.smNr || 'keine') + ')', hinweise: [],
+      dispatches: [Object.assign({}, d, { kat: dsZ[d.status] || null })], offeneAnzahl: 0, haupt: d,
+      dispatchNr: d.nr || '–', techniker: d.techniker || '–', unterstatus: '', abschlussgrund: '', notizen: []
+    };
+  }
+
+  // ===== Demo-Datenquelle (synthetisch) =====
+  demoDaten(h) {
+    const t = n => this.minusTage(h, n);
+    const F = {
+      'SM-104201': 'Okklusionsalarm ohne erkennbare Ursache', 'SM-104202': 'Display flackert, SpO2-Kurve fällt aus',
+      'SM-104203': 'Antrieb blockiert bei Bolusgabe', 'SM-104204': 'Ableitung V4 ohne Signal', 'SM-104205': 'Unterdruck wird nicht erreicht',
+      'SM-104188': 'Ladefehler Akku, Selbsttest schlägt fehl', 'SM-104190': 'Druckalarm bei Exspiration', 'SM-104192': 'Tür-Sensor meldet offen',
+      'SM-104193': 'Sensor wird nicht erkannt', 'SM-104195': 'NIBP-Messung bricht ab', 'SM-104196': 'Manschette pumpt nicht auf',
+      'SM-104197': 'Spritzenerkennung fehlerhaft', 'SM-104170': 'Luftsensor löst Fehlalarm aus', 'SM-104172': 'Drucker zieht Papier nicht ein',
+      'SM-104175': 'Motorgeräusch, Leistung zu gering', 'SM-104178': 'Elektrodenkabel-Erkennung defekt', 'SM-104160': 'Netzteil ohne Funktion',
+      'SM-104199': 'Alarmlautsprecher zu leise'
+    };
+    const sm = (nr, geraet, modell, sn, sw, kunde, kontakt, eingang, status, extra) =>
+      Object.assign({ nr, geraet, modell, sn, sw, kunde, kontakt, fehler: F[nr] || '', wareneingang: t(eingang), status, warenausgang: null, notizen: [] }, extra || {});
+    const ds = (nr, smNr, status, techniker, unterstatus, erstellt, abgeschlossen, grund) =>
+      ({ nr, smNr, status, techniker, unterstatus, erstellt: t(erstellt), abgeschlossen: abgeschlossen === null ? null : t(abgeschlossen), abschlussgrund: grund || null });
+    const basis = {
+      servicemeldungen: [
+        sm('SM-104201', 'Infusionspumpe', 'IP-300', 'IP3-24-0412', '2.4.1', 'Klinik am Seepark', 'Fr. Brandl, Medizintechnik', 1, 'Aktiv'),
+        sm('SM-104202', 'Patientenmonitor', 'PM-12', 'PM12-23-1187', '5.0.3', 'Rehazentrum Waldblick', 'Hr. Kovač, Haustechnik', 2, 'Aktiv'),
+        sm('SM-104203', 'Spritzenpumpe', 'SP-20', 'SP20-22-0730', '1.9.2', 'Gesundheitszentrum Donaublick', 'Fr. Lechner, Stationsleitung', 2, 'Aktiv'),
+        sm('SM-104204', 'EKG-Gerät', 'EK-8', 'EK8-21-0055', '3.2.0', 'Praxisgemeinschaft Lindengasse', 'Fr. Hofer, Ordination', 3, 'Aktiv'),
+        sm('SM-104205', 'Absaugpumpe', 'AP-2', 'AP2-24-0901', '1.1.4', 'Pflegeheim Sonnenhof', 'Hr. Weiß, Einkauf', 0, 'Aktiv'),
+        sm('SM-104188', 'Defibrillator', 'DF-5', 'DF5-20-0318', '4.0.7', 'Klinik am Seepark', 'Fr. Brandl, Medizintechnik', 9, 'Aktiv'),
+        sm('SM-104190', 'Beatmungsgerät', 'BV-40', 'BV40-22-0144', '6.1.0', 'Krankenhaus Musterstadt Süd', 'Dr. Steiner, Intensivstation', 8, 'Aktiv'),
+        sm('SM-104192', 'Infusionspumpe', 'IP-300', 'IP3-23-0877', '2.4.0', 'Gesundheitszentrum Donaublick', 'Fr. Lechner, Stationsleitung', 7, 'Gelöst'),
+        sm('SM-104193', 'Pulsoxymeter', 'PX-1', 'PX1-24-1320', '1.0.8', 'Pflegeheim Sonnenhof', 'Hr. Weiß, Einkauf', 6, 'Aktiv'),
+        sm('SM-104195', 'Patientenmonitor', 'PM-12', 'PM12-22-0961', '5.0.1', 'Krankenhaus Musterstadt Süd', 'Dr. Steiner, Intensivstation', 6, 'Aktiv'),
+        sm('SM-104196', 'Blutdruckmessgerät', 'BD-7', 'BD7-23-0412', '2.2.5', 'Praxisgemeinschaft Lindengasse', 'Fr. Hofer, Ordination', 5, 'Aktiv'),
+        sm('SM-104197', 'Spritzenpumpe', 'SP-20', 'SP20-24-0188', '1.9.2', 'Rehazentrum Waldblick', 'Hr. Kovač, Haustechnik', 4, 'Aktiv'),
+        sm('SM-104170', 'Infusionspumpe', 'IP-300', 'IP3-21-0233', '2.3.9', 'Klinik am Seepark', 'Fr. Brandl, Medizintechnik', 12, 'Gelöst'),
+        sm('SM-104172', 'EKG-Gerät', 'EK-8', 'EK8-20-0710', '3.1.4', 'Gesundheitszentrum Donaublick', 'Fr. Lechner, Stationsleitung', 14, 'Gelöst',
+          { notizen: ['Kunden-E-Mail vom ' + this.datumText(t(2)) + ': Kostenvoranschlag abgelehnt, Rückversand unrepariert'] }),
+        sm('SM-104175', 'Absaugpumpe', 'AP-2', 'AP2-19-0042', '1.0.2', 'Pflegeheim Sonnenhof', 'Hr. Weiß, Einkauf', 11, 'Gelöst'),
+        sm('SM-104178', 'Defibrillator', 'DF-5', 'DF5-21-0566', '4.0.7', 'Krankenhaus Musterstadt Süd', 'Dr. Steiner, Intensivstation', 8, 'Gelöst'),
+        sm('SM-104160', 'Patientenmonitor', 'PM-12', 'PM12-21-0402', '4.9.8', 'Rehazentrum Waldblick', 'Hr. Kovač, Haustechnik', 20, 'Gelöst', { warenausgang: t(9) }),
+        sm('SM-104199', 'Spritzenpumpe', 'SP-20', 'SP20-25-0021', '2.0.0', 'Klinik am Seepark', 'Fr. Brandl, Medizintechnik', 1, 'In Klärung')
+      ],
+      dispatches: [
+        ds('DS-55101', 'SM-104188', 'In Arbeit', 'M. Huber', 'Reparatur', 7, null),
+        ds('DS-55104', 'SM-104190', 'Warten auf Freigabe', 'S. Novak', 'KV offen – Freigabe ausstehend', 6, null),
+        ds('DS-55107', 'SM-104192', 'In Arbeit', 'J. Berger', 'Abschlussdokumentation', 6, null),
+        ds('DS-55108', 'SM-104193', 'Zugewiesen', 'L. Petrović', 'Diagnose', 2, null),
+        ds('DS-55109', 'SM-104195', 'Storniert', 'T. Wagner', '', 5, null),
+        ds('DS-55112', 'SM-104195', 'In Arbeit', 'M. Huber', 'Reparatur', 4, null),
+        ds('DS-55110', 'SM-104196', 'In Arbeit', 'S. Novak', 'Reparatur', 4, null),
+        ds('DS-55113', 'SM-104197', 'Zugewiesen', 'T. Wagner', 'Diagnose', 1, null),
+        ds('DS-55090', 'SM-104170', 'Abgeschlossen', 'M. Huber', '', 10, 2, 'Repariert'),
+        ds('DS-55092', 'SM-104172', 'Abgeschlossen', 'J. Berger', '', 12, 1, 'KV abgelehnt'),
+        ds('DS-55095', 'SM-104175', 'Abgeschlossen', 'L. Petrović', '', 9, 3, 'Nicht reparierbar'),
+        ds('DS-55098', 'SM-104178', 'Abgeschlossen', 'S. Novak', '', 7, 1, 'Repariert'),
+        ds('DS-55080', 'SM-104160', 'Abgeschlossen', 'T. Wagner', '', 18, 10, 'Repariert'),
+        ds('DS-55115', 'SM-104999', 'Zugewiesen', 'T. Wagner', 'Diagnose', 1, null)
+      ]
+    };
+    // Weitere synthetische Aufträge, damit jede Spalte 18 Aufträge enthält
+    const geraete = [['Infusionspumpe', 'IP-300', 'IP3'], ['Patientenmonitor', 'PM-12', 'PM12'], ['Spritzenpumpe', 'SP-20', 'SP20'], ['EKG-Gerät', 'EK-8', 'EK8'],
+      ['Defibrillator', 'DF-5', 'DF5'], ['Beatmungsgerät', 'BV-40', 'BV40'], ['Pulsoxymeter', 'PX-1', 'PX1'], ['Blutdruckmessgerät', 'BD-7', 'BD7'], ['Absaugpumpe', 'AP-2', 'AP2']];
+    const kunden = [['Klinik am Seepark', 'Fr. Brandl, Medizintechnik'], ['Rehazentrum Waldblick', 'Hr. Kovač, Haustechnik'], ['Gesundheitszentrum Donaublick', 'Fr. Lechner, Stationsleitung'],
+      ['Praxisgemeinschaft Lindengasse', 'Fr. Hofer, Ordination'], ['Pflegeheim Sonnenhof', 'Hr. Weiß, Einkauf'], ['Krankenhaus Musterstadt Süd', 'Dr. Steiner, Intensivstation']];
+    const fehlerListe = ['Selbsttest schlägt fehl', 'Akku lädt nicht', 'Display ohne Anzeige', 'Alarm ohne Ursache', 'Gehäuse beschädigt', 'Messwerte unplausibel', 'Bedientaste ohne Funktion'];
+    const tech = this.techniker();
+    let n = 104300, dn = 55200;
+    const neu = (eingang, status) => {
+      const g = geraete[n % geraete.length], k = kunden[n % kunden.length], nr = 'SM-' + n;
+      basis.servicemeldungen.push({ nr, geraet: g[0], modell: g[1], sn: g[2] + '-25-' + String(n).slice(-4), sw: '2.' + (n % 5) + '.0', kunde: k[0], kontakt: k[1],
+        fehler: fehlerListe[n % fehlerListe.length], wareneingang: t(eingang), status, warenausgang: null, notizen: [] });
+      n++; return nr;
+    };
+    const dsNeu = (smNr, status, unter, erstellt, abg, grund) => {
+      basis.dispatches.push({ nr: 'DS-' + dn, smNr, status, techniker: tech[dn % tech.length], unterstatus: unter, erstellt: t(erstellt), abgeschlossen: abg === null ? null : t(abg), abschlussgrund: grund || null });
+      dn++;
+    };
+    for (let i = 0; i < 13; i++) neu(i % 6, 'Aktiv');
+    const unterListe = ['Diagnose', 'Reparatur', 'KV offen – Freigabe ausstehend', 'Reparatur', 'Diagnose', 'Ersatzteil bestellt'];
+    for (let i = 0; i < 11; i++) {
+      const e = 1 + (i % 8), u = unterListe[i % unterListe.length], nr = neu(e, 'Aktiv');
+      dsNeu(nr, /KV offen/.test(u) ? 'Warten auf Freigabe' : 'In Arbeit', u, Math.max(0, e - 1), null);
+    }
+    const gruende = ['Repariert', 'Repariert', 'KV abgelehnt', 'Repariert', 'Nicht reparierbar', 'Repariert'];
+    for (let i = 0; i < 14; i++) {
+      const e = 4 + (i % 10), abg = i % 7, grund = gruende[i % gruende.length], nr = neu(e, 'Gelöst');
+      if (grund === 'KV abgelehnt') basis.servicemeldungen[basis.servicemeldungen.length - 1].notizen.push('Kunden-E-Mail vom ' + this.datumText(t(abg)) + ': Kostenvoranschlag abgelehnt');
+      dsNeu(nr, 'Abgeschlossen', '', Math.max(abg + 1, e - 2), abg, grund);
+    }
+    return basis;
+  }
+  techniker() { return ['M. Huber', 'S. Novak', 'J. Berger', 'L. Petrović', 'T. Wagner']; }
+
+  // ===== Simulierte CRM-Änderungen (verändern nur die Demo-Quelle) =====
+  findeSm(q, nr) { return q.servicemeldungen.find(s => s.nr === nr); }
+  naechsteNr(liste, praefix, start) {
+    let max = start;
+    liste.forEach(x => { const s = String(x.nr || ''); const m = s.match(/(\d+)$/); if (m && s.indexOf(praefix) === 0) max = Math.max(max, Number(m[1])); });
+    return praefix + (max + 1);
+  }
+  offeneDs(q, nr, cfg) { const z = cfg.statusZuordnung.dispatch; return q.dispatches.filter(d => d.smNr === nr && z[d.status] === 'offen'); }
+  mNeueSm(q, heute) {
+    const v = [
+      ['Infusionspumpe', 'IP-300', 'IP3-25', '2.4.1', 'Klinik am Seepark', 'Fr. Brandl, Medizintechnik'],
+      ['Patientenmonitor', 'PM-12', 'PM12-25', '5.0.3', 'Rehazentrum Waldblick', 'Hr. Kovač, Haustechnik'],
+      ['EKG-Gerät', 'EK-8', 'EK8-25', '3.2.0', 'Praxisgemeinschaft Lindengasse', 'Fr. Hofer, Ordination'],
+      ['Spritzenpumpe', 'SP-20', 'SP20-25', '1.9.2', 'Pflegeheim Sonnenhof', 'Hr. Weiß, Einkauf']
+    ][q.servicemeldungen.length % 4];
+    const nr = this.naechsteNr(q.servicemeldungen, 'SM-', 104200);
+    q.servicemeldungen.push({ nr, geraet: v[0], modell: v[1], sn: v[2] + '-' + this.zwei(q.servicemeldungen.length) + '07', sw: v[3], kunde: v[4], kontakt: v[5], fehler: 'Gerät startet nicht (Demo-Eingang)', wareneingang: heute, status: 'Aktiv', warenausgang: null, notizen: [] });
+    return nr;
+  }
+  mDispatchErstellen(q, nr, tech, heute) {
+    const dnr = this.naechsteNr(q.dispatches, 'DS-', 55100);
+    q.dispatches.push({ nr: dnr, smNr: nr, status: 'Zugewiesen', techniker: tech, unterstatus: 'Diagnose', erstellt: heute, abgeschlossen: null, abschlussgrund: null });
+    return dnr;
+  }
+  mSmSchliessen(q, nr) { const s = this.findeSm(q, nr); if (s) s.status = 'Gelöst'; }
+  mKvOffen(q, nr, cfg) { const o = this.offeneDs(q, nr, cfg); const d = o[o.length - 1]; if (d) { d.status = 'Warten auf Freigabe'; d.unterstatus = 'KV offen – Freigabe ausstehend'; } }
+  mKvAbgelehnt(q, nr, cfg) {
+    const s = this.findeSm(q, nr);
+    if (s) s.notizen = (s.notizen || []).concat(['Kunden-E-Mail vom ' + this.datumText(cfg.heute) + ': Kostenvoranschlag abgelehnt']);
+    const o = this.offeneDs(q, nr, cfg); const d = o[o.length - 1];
+    if (d) { d.status = 'In Arbeit'; d.unterstatus = 'KV abgelehnt – Rückversand vorbereiten'; }
+  }
+  mDispatchSchliessen(q, nr, grund, cfg) {
+    const o = this.offeneDs(q, nr, cfg); const d = o[o.length - 1];
+    if (d) { d.status = 'Abgeschlossen'; d.abgeschlossen = cfg.heute; d.abschlussgrund = grund; d.unterstatus = ''; return d.nr; }
+    return null;
+  }
+  mWiedereroeffnen(q, nr, cfg) {
+    const z = cfg.statusZuordnung.dispatch;
+    const zu = q.dispatches.filter(d => d.smNr === nr && z[d.status] === 'geschlossen')
+      .sort((a, b) => String(a.abgeschlossen || '').localeCompare(String(b.abgeschlossen || '')));
+    const d = zu[zu.length - 1];
+    if (d) { d.status = 'In Arbeit'; d.abgeschlossen = null; d.abschlussgrund = null; d.unterstatus = 'Wiedereröffnet'; return d.nr; }
+    return null;
+  }
+  mWarenausgang(q, nr, heute) { const s = this.findeSm(q, nr); if (s) s.warenausgang = heute; }
+  mStorno(q, nr) { const s = this.findeSm(q, nr); if (s) s.status = 'Storniert'; }
+  mFehlerhaft(q, heute) {
+    const nr = this.naechsteNr(q.servicemeldungen, 'SM-', 104200);
+    q.servicemeldungen.push({ nr, geraet: 'Spritzenpumpe', modell: 'SP-20', sn: 'SP20-25-0999', sw: '1.8.0', kunde: 'Klinik am Seepark', kontakt: 'Fr. Brandl, Medizintechnik', fehler: 'Unbekannt', wareneingang: heute, status: 'Neu (nicht zugeordnet)', warenausgang: null, notizen: [] });
+    return nr;
+  }
+
+  // ===== Szenarien A–F =====
+  szenario(q, b, cfg, tech) {
+    const e = this.bewerte(q, cfg).eintraege;
+    const or1 = x => x.spalte === 'orange' && x.offeneAnzahl === 1;
+    if (b === 'A') { const nr = this.mNeueSm(q, cfg.heute); return { key: nr, text: 'Szenario A: Servicemeldung ' + nr + ' im Wareneingang erfasst' }; }
+    if (b === 'B') {
+      const z = e.find(x => x.spalte === 'rot'); if (!z) return null;
+      const d = this.mDispatchErstellen(q, z.key, tech, cfg.heute);
+      return { key: z.key, text: 'Szenario B: Dispatch ' + d + ' zu ' + z.smNr + ' erstellt, zugewiesen an ' + tech };
+    }
+    if (b === 'C') {
+      const z = e.find(x => or1(x) && x.smKat === 'offen'); if (!z) return null;
+      this.mSmSchliessen(q, z.key);
+      return { key: z.key, text: 'Szenario C: Servicemeldung ' + z.smNr + ' geschlossen, Dispatch ' + z.dispatchNr + ' noch offen' };
+    }
+    if (b === 'D') {
+      const z = e.find(x => or1(x) && x.smKat === 'geschlossen') || e.find(or1); if (!z) return null;
+      const d = this.mDispatchSchliessen(q, z.key, 'Repariert', cfg);
+      return { key: z.key, text: 'Szenario D: Dispatch ' + d + ' zu ' + z.smNr + ' geschlossen (repariert)' };
+    }
+    if (b === 'E') {
+      const z = e.find(x => or1(x) && /KV offen/.test(x.unterstatus)) || e.find(x => or1(x) && x.smKat === 'offen'); if (!z) return null;
+      this.mKvAbgelehnt(q, z.key, cfg); this.mSmSchliessen(q, z.key);
+      const d = this.mDispatchSchliessen(q, z.key, 'KV abgelehnt', cfg);
+      return { key: z.key, text: 'Szenario E: KV zu ' + z.smNr + ' abgelehnt (E-Mail in Notizen), SM und Dispatch ' + d + ' geschlossen' };
+    }
+    if (b === 'F') {
+      const g = e.filter(x => x.spalte === 'gruen').sort((a, c) => String(c.dispatchAbschluss).localeCompare(String(a.dispatchAbschluss)));
+      const z = g[0]; if (!z) return null;
+      const d = this.mWiedereroeffnen(q, z.key, cfg);
+      return { key: z.key, text: 'Szenario F: Dispatch ' + d + ' zu ' + z.smNr + ' wiedereröffnet' };
+    }
+    return null;
+  }
+
+  // ===== Simulierte Synchronisierung =====
+  logEintrag(text, fehler) { return { zeit: this.uhr(Date.now()), text: text, fehler: !!fehler }; }
+  nurLog(text, fehler) { this.setState({ log: [this.logEintrag(text, fehler)].concat(this.state.log).slice(0, 14) }); }
+  commit(q, text, key) {
+    const s = this.state, jetzt = Date.now(), cfg = this.cfg();
+    let meldung = text;
+    if (key) { const e = this.bewerte(q, cfg).eintraege.find(x => x.key === key); if (e) meldung += ' → ' + this.farbname(e.spalte); }
+    const neu = [this.logEintrag(meldung, false)];
+    const patch = { quelle: q, geaendert: key || null };
+    if (s.verbindung) { patch.anzeige = this.klon(q); patch.letzterSync = jetzt; patch.letzterVersuch = jetzt; }
+    else neu.unshift(this.logEintrag('Leitstand nicht synchronisiert – Verbindung unterbrochen', true));
+    patch.log = neu.concat(s.log).slice(0, 14);
+    this.setState(patch);
+  }
+  tick() {
+    const s = this.state, cfg = this.cfg(), jetzt = Date.now();
+    const patch = { jetzt: jetzt };
+    if (jetzt - s.letzterVersuch >= cfg.syncIntervallSek * 1000) {
+      patch.letzterVersuch = jetzt;
+      if (s.verbindung) { patch.anzeige = this.klon(s.quelle); patch.letzterSync = jetzt; }
+      else patch.log = [this.logEintrag('Synchronisierung fehlgeschlagen (Verbindung unterbrochen)', true)].concat(s.log).slice(0, 14);
+    }
+    if (Math.floor(jetzt / 1000) % cfg.seitenwechselSek === 0) patch.seitenTick = s.seitenTick + 1;
+    this.setState(patch);
+  }
+  vollbild() {
+    try {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+      else if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+    } catch (e) { /* Vollbild nicht erlaubt */ }
+    this.setState({ ansicht: 'tv', detail: null });
+  }
+
+  // ===== Kurznummer =====
+  // Stabile Kurznummer = letzte 4 Ziffern der Servicemeldung. Sie bleibt von Rot bis Grün gleich.
+  // Haben zwei Aufträge dieselben 4 Endziffern, wird für beide die volle Ziffernfolge gezeigt.
+  kurzNummern(eintraege) {
+    const ziffern = e => (String(e.smNr || '').match(/\d+/g) || ['']).join('');
+    const kurz4 = z => z.slice(-4);
+    const anzahl = {};
+    eintraege.forEach(e => { const k = kurz4(ziffern(e)); if (k) anzahl[k] = (anzahl[k] || 0) + 1; });
+    const map = {};
+    eintraege.forEach(e => { const z = ziffern(e), k = kurz4(z); map[e.key] = !k ? '' : (anzahl[k] > 1 ? z : k); });
+    return map;
+  }
+
+  // ===== Darstellung =====
+  renderVals() {
+    const s = this.state, cfg = this.cfg();
+    const erg = this.bewerte(s.anzeige, cfg); const z = erg.zaehler; const alle = erg.eintraege;
+    const istTv = s.ansicht === 'tv', istAdmin = !istTv;
+    const kurzMap = this.kurzNummern(alle);
+    const deko = e => Object.assign({}, e, {
+      kurz: kurzMap[e.key] || '–',
+      oeffnen: () => this.setState({ detail: e.key }),
+      rahmen: e.key === s.geaendert ? '0.14em solid #0B5CAD' : '1px solid #D5DEE8',
+      zeigeKunde: !!cfg.kundeAufTv,
+      kundeTv: cfg.kundeAufTv ? e.kunde : '',
+      wareneingangText: this.datumText(e.wareneingang),
+      beginnText: this.datumText(e.bearbeitungsbeginn),
+      abschlussText: this.datumText(e.dispatchAbschluss),
+      grundFarbe: e.abschlussgrund === 'Repariert' ? '#0E6B37' : '#8A4B0B',
+      standzeit: e.standzeit === null ? '–' : e.standzeit,
+      standzeitText: e.standzeit === null ? '–' : (e.standzeit === 1 ? '1 Tag' : e.standzeit + ' Tage'),
+      hatHinweis: e.hinweise.length > 0, hinweisText: e.hinweise.join(' · '),
+      statusZeile: e.hinweise.length ? 'Hinweis: ' + e.hinweise.join(' · ') : (e.unterstatus || ''),
+      statusFarbe: e.hinweise.length ? '#B05400' : '#5B6B7E',
+      hatUnterstatus: !!e.unterstatus, hatGrund: !!e.grund,
+      spalteLabel: this.label(e.spalte), spalteFarbe: this.farbe(e.spalte),
+      dsListeText: e.dispatches.map(d => d.nr).join(', ') || 'kein Dispatch'
+    });
+    const sekImZyklus = Math.floor(s.jetzt / 1000) % cfg.seitenwechselSek;
+    const fortschritt = Math.round((sekImZyklus + 1) / cfg.seitenwechselSek * 100) + '%';
+    const spalte = sp => {
+      const liste = alle.filter(e => e.spalte === sp).map(deko);
+      const k = cfg.karten[sp];
+      const n = Math.max(1, Math.ceil(liste.length / k)); const i = s.seitenTick % n;
+      return {
+        karten: liste.slice(i * k, i * k + k), seite: n > 1 ? 'Seite ' + (i + 1) + ' von ' + n : '', leer: liste.length === 0,
+        mehrSeiten: n > 1, seiteKurz: (i + 1) + '/' + n, fortschritt: n > 1 ? fortschritt : '0%'
+      };
+    };
+    const syncOk = (s.jetzt - s.letzterSync) <= cfg.syncIntervallSek * 2000 + 1500;
+    const offeneStandzeiten = alle.filter(e => (e.spalte === 'rot' || e.spalte === 'orange') && e.standzeit !== null).map(e => e.standzeit);
+    const laengste = offeneStandzeiten.length ? Math.max.apply(null, offeneStandzeiten) : null;
+
+    // Verwaltung: Suche und Filter
+    const qs = (s.suche || '').trim().toLowerCase();
+    const aktiv = ['rot', 'orange', 'gruen'];
+    const treffer = alle.filter(e => {
+      if (s.fStatus === 'aktiv' && aktiv.indexOf(e.spalte) < 0) return false;
+      if (s.fStatus !== 'aktiv' && s.fStatus !== 'alle' && e.spalte !== s.fStatus) return false;
+      if (s.fTech && e.techniker !== s.fTech) return false;
+      if (s.fTyp && e.geraet !== s.fTyp) return false;
+      if (s.fKunde && e.kunde !== s.fKunde) return false;
+      if (qs) { const t = [e.smNr, e.sn, e.geraetText].concat(e.dispatches.map(d => d.nr)).join(' ').toLowerCase(); if (t.indexOf(qs) < 0) return false; }
+      return true;
+    }).map(deko);
+    const opt = (werte, alleText) => [{ v: '', l: alleText }].concat(werte.filter((w, i, a) => w && w !== '–' && a.indexOf(w) === i).sort().map(w => ({ v: w, l: w })));
+    const setF = feld => ev => { const o = {}; o[feld] = ev && ev.target ? ev.target.value : ev; this.setState(o); };
+
+    // Detailansicht
+    const det = s.detail ? alle.find(e => e.key === s.detail) : null;
+    const d = det ? deko(det) : { smNr: '', spalteLabel: '', spalteFarbe: '#0F2A4A', hatGrund: false, hatHinweis: false, grund: '', hinweisText: '' };
+    const felder = det ? [
+      ['Kurznummer', kurzMap[det.key] || '–'],
+      ['Servicemeldung', det.smNr + ' (Status: ' + det.smStatus + ')'],
+      ['Dispatchnummer', det.dispatches.length ? det.dispatches.map(x => x.nr).join(', ') : 'noch kein Dispatch'],
+      ['Zugewiesener Techniker', det.techniker],
+      ['Bearbeitungsstatus', det.unterstatus || (det.haupt ? det.haupt.status : 'nicht gestartet')],
+      ['Gerät', det.geraet || '–'], ['Modell', det.modell || '–'],
+      ['Seriennummer', det.sn], ['Softwareversion', det.sw],
+      ['Fehlerbeschreibung', det.fehler],
+      ['Kunde', cfg.kundeAufTv ? det.kunde : 'nicht für den TV freigegeben'],
+      ['Wareneingangsdatum', this.datumText(det.wareneingang)],
+      ['Standzeit seit Wareneingang', d.standzeitText],
+      ['Bearbeitungsbeginn', this.datumText(det.bearbeitungsbeginn)],
+      ['Dispatch-Abschluss', this.datumText(det.dispatchAbschluss)],
+      ['Abschlussgrund', det.abschlussgrund || '–'],
+      ['Warenausgang', det.warenausgang ? this.datumText(det.warenausgang) : 'noch nicht gebucht'],
+      ['Standzeit bis Warenausgang', det.standzeitAusgang === null ? 'nicht berechenbar (Warenausgang fehlt)' : det.standzeitAusgang + ' Tage']
+    ].map(f => ({ l: f[0], v: f[1] })) : [];
+    const nr = det && det.typ === 'sm' && det.key === det.smNr ? det.key : null;
+    const akt = (fn, text) => () => { if (!nr) return; const q = this.klon(this.state.quelle); fn(q); this.commit(q, text, nr); };
+
+    const szen = b => () => {
+      const q = this.klon(this.state.quelle);
+      const r = this.szenario(q, b, cfg, this.state.simTech);
+      if (!r) { this.nurLog('Szenario ' + b + ': kein passender Auftrag vorhanden', true); return; }
+      this.commit(q, r.text, r.key); this.setState({ detail: null });
+    };
+    const mapListe = m => Object.keys(m).map(w => ({ w: w, k: this.katLabel(m[w]) }));
+
+    return {
+      z: z, rot: spalte('rot'), orange: spalte('orange'), gruen: spalte('gruen'),
+      istTv: istTv, istAdmin: istAdmin,
+      tvBg: istTv ? '#0A2A5E' : 'transparent', tvFg: istTv ? '#FFFFFF' : '#0F2A4A',
+      adBg: istAdmin ? '#0A2A5E' : 'transparent', adFg: istAdmin ? '#FFFFFF' : '#0F2A4A',
+      zeigeTv: () => this.setState({ ansicht: 'tv', detail: null }), zeigeAdmin: () => this.setState({ ansicht: 'admin' }),
+      vollbild: () => this.vollbild(),
+      syncOk: syncOk, syncVeraltet: !syncOk, syncZeit: this.uhr(s.letzterSync),
+      datumHeute: this.datumText(cfg.heute), uhrJetzt: this.uhr(s.jetzt), uhrHM: this.uhr(s.jetzt).slice(0, 5),
+      hatKlaerung: z.klaerung > 0,
+      kundeKopf: cfg.kundeAufTv ? 'KUNDE' : '',
+      laengsteText: laengste === null ? '–' : (laengste === 1 ? '1 Tag' : laengste + ' Tage'),
+
+      suche: s.suche, fStatus: s.fStatus, fTech: s.fTech, fTyp: s.fTyp, fKunde: s.fKunde, simTech: s.simTech,
+      onSuche: setF('suche'), onStatus: setF('fStatus'), onTech: setF('fTech'), onTyp: setF('fTyp'), onKunde: setF('fKunde'), onSimTech: setF('simTech'),
+      statusOptionen: [
+        { v: 'aktiv', l: 'Alle auf dem TV' }, { v: 'rot', l: 'Wareneingang' }, { v: 'orange', l: 'In Bearbeitung' }, { v: 'gruen', l: 'Ausgang' },
+        { v: 'klaerung', l: 'Klärungsfälle' }, { v: 'archiv', l: 'Archiviert' }, { v: 'storniert', l: 'Storniert' }, { v: 'alle', l: 'Alle Datensätze' }
+      ],
+      techOptionen: opt(alle.map(e => e.techniker), 'Alle Techniker'),
+      typOptionen: opt(alle.map(e => e.geraet), 'Alle Gerätetypen'),
+      kundeOptionen: opt(alle.map(e => e.kunde), 'Alle Kunden'),
+      simTechOptionen: this.techniker().map(t => ({ v: t, l: t })),
+      treffer: treffer, trefferText: treffer.length + (treffer.length === 1 ? ' Auftrag' : ' Aufträge') + ' gefunden',
+      zeigeKlaerung: () => this.setState({ fStatus: 'klaerung', suche: '', fTech: '', fTyp: '', fKunde: '' }),
+
+      szA: szen('A'), szB: szen('B'), szC: szen('C'), szD: szen('D'), szE: szen('E'), szF: szen('F'),
+      verbindungText: s.verbindung ? 'Verbindung unterbrechen' : 'Verbindung wiederherstellen',
+      verbindungUmschalten: () => {
+        const st = this.state, jetzt = Date.now();
+        if (st.verbindung) this.setState({ verbindung: false, log: [this.logEintrag('Verbindung zur Datenquelle unterbrochen (simuliert)', true)].concat(st.log).slice(0, 14) });
+        else this.setState({ verbindung: true, anzeige: this.klon(st.quelle), letzterSync: jetzt, letzterVersuch: jetzt, log: [this.logEintrag('Verbindung wiederhergestellt – synchronisiert', false)].concat(st.log).slice(0, 14) });
+      },
+      jetztSync: () => {
+        const st = this.state, jetzt = Date.now();
+        if (!st.verbindung) { this.nurLog('Synchronisierung fehlgeschlagen (Verbindung unterbrochen)', true); return; }
+        this.setState({ anzeige: this.klon(st.quelle), letzterSync: jetzt, letzterVersuch: jetzt, log: [this.logEintrag('Manuell synchronisiert', false)].concat(st.log).slice(0, 14) });
+      },
+      fehlerhaft: () => { const q = this.klon(this.state.quelle); const n = this.mFehlerhaft(q, cfg.heute); this.commit(q, 'Datensatz ' + n + ' mit unbekanntem Status „Neu (nicht zugeordnet)“ empfangen', n); },
+      zuruecksetzen: () => {
+        const daten = this.demoDaten(cfg.heute), jetzt = Date.now();
+        this.setState({ quelle: daten, anzeige: this.klon(daten), letzterSync: jetzt, letzterVersuch: jetzt, verbindung: true, detail: null, geaendert: null, log: [this.logEintrag('Demo zurückgesetzt', false)] });
+      },
+      ausstehend: JSON.stringify(s.quelle) !== JSON.stringify(s.anzeige),
+      log: s.log.map(l => ({ zeit: l.zeit, text: l.text, farbe: l.fehler ? '#B05400' : '#0F2A4A' })),
+      zuordnungSm: mapListe(cfg.statusZuordnung.servicemeldung), zuordnungDs: mapListe(cfg.statusZuordnung.dispatch),
+      gruenTage: cfg.gruenAnzeigeTage,
+
+      detailOffen: !!det, d: d, felder: felder, schliessen: () => this.setState({ detail: null }),
+      dispatchListe: det ? det.dispatches.map(x => ({ nr: x.nr || '–', status: x.status || '–', techniker: x.techniker || '–',
+        info: x.abgeschlossen ? 'geschlossen ' + this.datumText(x.abgeschlossen) + (x.abschlussgrund ? ' · ' + x.abschlussgrund : '') : (x.unterstatus || '') })) : [],
+      keineDispatches: !!det && det.dispatches.length === 0,
+      hatNotizen: !!det && det.notizen.length > 0, notizen: det ? det.notizen.map(n => ({ text: n })) : [],
+      zeigeAktionen: !!nr,
+      aRot: !!det && det.spalte === 'rot', aOrange: !!det && det.spalte === 'orange',
+      aSmOffen: !!det && det.spalte === 'orange' && det.smKat === 'offen', aGruen: !!det && det.spalte === 'gruen',
+      aStornierbar: !!nr && det.smKat !== 'storniert' && det.spalte !== 'archiv',
+      aDispatch: akt(q => this.mDispatchErstellen(q, nr, this.state.simTech, cfg.heute), 'Dispatch zu ' + nr + ' erstellt (' + s.simTech + ')'),
+      aSmSchliessen: akt(q => this.mSmSchliessen(q, nr), 'Servicemeldung ' + nr + ' geschlossen'),
+      aKvOffen: akt(q => this.mKvOffen(q, nr, cfg), 'KV zu ' + nr + ' erstellt, Freigabe ausstehend'),
+      aKvAbgelehnt: akt(q => this.mKvAbgelehnt(q, nr, cfg), 'KV zu ' + nr + ' abgelehnt, E-Mail in Notizen'),
+      aSchliessenRep: akt(q => this.mDispatchSchliessen(q, nr, 'Repariert', cfg), 'Dispatch zu ' + nr + ' geschlossen (repariert)'),
+      aSchliessenNicht: akt(q => this.mDispatchSchliessen(q, nr, 'Nicht reparierbar', cfg), 'Dispatch zu ' + nr + ' geschlossen (nicht reparierbar)'),
+      aSchliessenKv: akt(q => this.mDispatchSchliessen(q, nr, 'KV abgelehnt', cfg), 'Dispatch zu ' + nr + ' geschlossen (KV abgelehnt)'),
+      aWeitererDs: akt(q => this.mDispatchErstellen(q, nr, this.state.simTech, cfg.heute), 'Weiterer Dispatch zu ' + nr + ' angelegt'),
+      aReopen: akt(q => this.mWiedereroeffnen(q, nr, cfg), 'Dispatch zu ' + nr + ' wiedereröffnet'),
+      aWarenausgang: akt(q => this.mWarenausgang(q, nr, cfg.heute), 'Warenausgang zu ' + nr + ' gebucht'),
+      aStorno: akt(q => this.mStorno(q, nr), 'Servicemeldung ' + nr + ' storniert')
+    };
+  }
+}
+
+// ===== Darstellung =====
+const app = new Component({});
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const neu = c => c.rahmen && c.rahmen.indexOf('#0B5CAD') >= 0 ? ' neu' : '';
+function kopfSpalte(nr, titel, sub, farbe, schrift, zahlFarbe, anzahl, sp, spur, fuell) {
+  return '<div class="skopf" style="background:' + farbe + ';color:' + schrift + '"><span class="nr">' + nr + '</span><div class="tx"><h2>' + titel + '</h2><div class="st">' + sub + '</div></div>'
+    + (sp.mehrSeiten ? '<span class="seite">' + esc(sp.seiteKurz) + '</span>' : '')
+    + '<span class="anz" style="color:' + zahlFarbe + '">' + anzahl + '</span></div>'
+    + '<div class="balken" style="background:' + spur + '"><div style="width:' + sp.fortschritt + ';background:' + fuell + '"></div></div>';
+}
+function kRot(c, v) {
+  return '<button type="button" class="karte' + neu(c) + '" data-key="' + esc(c.key) + '"><div class="reihe"><span class="badge">' + esc(c.kurz) + '</span><div class="inhalt">'
+    + '<div class="zeile1"><span class="gross" style="color:#9B1B33">' + esc(c.smNr) + '</span><div class="rechts"><div class="lab">Eingang</div><div class="wert">' + esc(c.wareneingangText) + '</div></div></div>'
+    + '<div class="raster r3"><div><div class="lab">Gerät</div><div class="wert">' + esc(c.geraetText) + '</div></div><div><div class="lab">Seriennummer</div><div class="wert n">' + esc(c.sn) + '</div></div>'
+    + (c.zeigeKunde ? '<div><div class="lab">Kunde</div><div class="wert n">' + esc(c.kunde) + '</div></div>' : '') + '</div></div></div></button>';
+}
+function kOrange(c) {
+  return '<button type="button" class="karte' + neu(c) + '" data-key="' + esc(c.key) + '"><div class="reihe"><span class="badge">' + esc(c.kurz) + '</span><div class="inhalt">'
+    + '<div class="zeile1"><div style="display:flex;align-items:baseline;gap:.4em;min-width:0"><span class="dtag">DISPATCH</span><span class="gross" style="color:#8A4B0B">' + esc(c.dispatchNr) + '</span></div>'
+    + '<div class="rechts" style="min-width:0;flex:0 1 auto;max-width:48%"><div class="wert">' + esc(c.techniker) + '</div><div class="lab" style="font-weight:600;color:' + c.statusFarbe + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(c.statusZeile) + '</div></div></div>'
+    + '<div class="raster r4"><div><div class="lab">Servicemeldung</div><div class="wert mono">' + esc(c.smNr) + '</div></div><div><div class="lab">Gerät</div><div class="wert">' + esc(c.geraetText) + '</div></div>'
+    + '<div><div class="lab">Seriennummer</div><div class="wert n">' + esc(c.sn) + '</div></div><div><div class="lab">Begonnen</div><div class="wert">' + esc(c.beginnText) + '</div></div></div></div></div></button>';
+}
+function kGruen(c) {
+  return '<button type="button" class="karte g' + neu(c) + '" data-key="' + esc(c.key) + '"><div class="reihe"><span class="badge ds">' + esc(c.dispatchNr) + '</span><div class="inhalt">'
+    + '<div style="display:flex;align-items:center;gap:.8em"><div class="raster r2" style="flex:1 1 auto;min-width:0">'
+    + '<div><div class="lab">Servicemeldung</div><div class="wert mono" style="font-size:.74em;color:#0E6B37">' + esc(c.smNr) + '</div></div>'
+    + '<div><div class="lab">Abschluss</div><div class="wert mono" style="font-size:.74em">' + esc(c.abschlussText) + '</div></div></div>'
+    + '<div class="rechts" style="min-width:4.4em"><div class="mono" style="font-size:1.05em;font-weight:700;line-height:1;color:#0A2A5E;white-space:nowrap">' + esc(c.standzeit) + '<span style="font-size:.5em;font-weight:600"> Tage</span></div>'
+    + '<div class="lab" style="font-weight:600;color:' + c.grundFarbe + ';white-space:nowrap">' + esc(c.abschlussgrund) + '</div></div></div></div></div></button>';
+}
+function zeichnen() {
+  if (!app.state || !app.state.anzeige) return;
+  const v = app.renderVals();
+  const sp = (s, fn, cls, leer) => '<div class="liste ' + cls + '">' + (s.leer ? '<p class="leer">' + leer + '</p>' : s.karten.map(fn).join('')) + '</div>';
+  let h = '<header class="kopf"><div class="marke"><div class="logo">LOGO</div><span class="firma">Dräger Austria <span>– Medizintechnik</span></span></div>'
+    + '<div class="seg" role="group" aria-label="Ansicht"><button type="button" class="aktiv" data-akt="tv">TV-Ansicht</button><button type="button" data-akt="voll">Vollbild</button></div></header>'
+    + '<section class="band"><div class="titel"><h1>Werkstatt im Blick</h1><span class="sub">Wareneingang · In Bearbeitung · Ausgang</span></div>'
+    + '<div class="zeit"><span class="d">' + v.datumHeute + '</span><span class="u">' + v.uhrHM + '</span></div></section>'
+    + (v.syncVeraltet ? '<div class="veraltet" role="alert">Daten veraltet – letzte erfolgreiche Aktualisierung ' + v.syncZeit + '</div>' : '')
+    + '<main>'
+    + '<section class="spalte" aria-label="Rot – Wareneingang">' + kopfSpalte('01', 'Wareneingang', 'Wartet auf einen Dispatch', '#B8183A', '#fff', '#9B1B33', v.z.rot, v.rot, '#F3D9DF', '#B8183A') + sp(v.rot, kRot, '', 'Keine offenen Wareneingänge') + '</section>'
+    + '<section class="spalte" aria-label="Orange – In Bearbeitung">' + kopfSpalte('02', 'In Bearbeitung', 'Dispatch ist offen', '#FF9A2E', '#1A1F2B', '#8A4B0B', v.z.orange, v.orange, '#FFE6CC', '#D97A10') + sp(v.orange, kOrange, '', 'Keine aktiven Dispatches') + '</section>'
+    + '<section class="spalte" aria-label="Grün – Ausgang">' + kopfSpalte('03', 'Ausgang / Abgeschlossen', 'Dispatch ist geschlossen', '#0E7A3E', '#fff', '#0E6B37', v.z.gruen, v.gruen, '#D3EBDD', '#0E7A3E') + sp(v.gruen, kGruen, 'g', 'Keine abgeschlossenen Aufträge') + '</section>'
+    + '</main><footer><span>DEMO – synthetische Testdaten, keine Verbindung zu SAP oder Dynamics 365</span></footer>';
+  if (v.detailOffen) {
+    const d = v.d;
+    h += '<div class="ov" data-akt="zu"><div class="dlg" role="dialog" aria-modal="true" aria-label="Auftragsdetails">'
+      + '<div class="dkopf"><div><div class="ey">AUFTRAGSDETAILS</div><div style="display:flex;align-items:center;gap:.7em;flex-wrap:wrap;margin-top:.15em"><h2>' + esc(d.smNr) + '</h2>'
+      + '<span class="chip"><i style="background:' + d.spalteFarbe + '"></i>' + esc(d.spalteLabel) + '</span></div></div><button type="button" class="btn" data-akt="zu">Schließen</button></div><div class="dbody">'
+      + (d.hatGrund ? '<p style="margin:0 0 .6em;color:#5B3FA8;font-weight:600">Grund: ' + esc(d.grund) + '</p>' : '')
+      + (d.hatHinweis ? '<p style="margin:0 0 .6em;color:#8A4B0B;font-weight:600">Hinweis: ' + esc(d.hinweisText) + '</p>' : '')
+      + '<div class="felder">' + v.felder.map(f => '<div><div class="l">' + esc(f.l) + '</div><div class="v">' + esc(f.v) + '</div></div>').join('') + '</div>'
+      + '<h3>Dispatches</h3>' + (v.keineDispatches ? '<p style="margin:0;color:#5B6B7E">Noch kein Dispatch angelegt.</p>' : v.dispatchListe.map(x => '<div class="dsz"><b class="mono">' + esc(x.nr) + '</b><span>' + esc(x.status) + '</span><span style="color:#3D4F66">' + esc(x.techniker) + '</span><span style="color:#5B6B7E">' + esc(x.info) + '</span></div>').join(''))
+      + (v.hatNotizen ? '<h3>CRM-Notizen</h3>' + v.notizen.map(n => '<p class="notiz">' + esc(n.text) + '</p>').join('') : '')
+      + '</div></div></div>';
+  }
+  document.getElementById('app').innerHTML = h;
+}
+document.addEventListener('click', e => {
+  const k = e.target.closest('[data-key]'); if (k) { app.setState({ detail: k.getAttribute('data-key') }); return; }
+  const a = e.target.closest('[data-akt]'); if (!a) return;
+  const akt = a.getAttribute('data-akt');
+  if (akt === 'zu' && (e.target === a || a.tagName === 'BUTTON')) app.setState({ detail: null });
+  if (akt === 'tv') app.setState({ ansicht: 'tv', detail: null });
+  if (akt === 'voll') app.vollbild();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && app.state.detail) app.setState({ detail: null }); });
+zeichnen();
+app.componentDidMount();
+</script>
+</body>
+</html>

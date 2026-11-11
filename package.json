@@ -1,0 +1,12 @@
+{
+  "name": "werkstatt-im-blick",
+  "version": "0.1.0",
+  "description": "Live-Leitstand für Reparaturaufträge auf dem Werkstatt-TV – Prototyp mit Testdaten",
+  "private": true,
+  "scripts": {
+    "test": "node tests/statuslogik.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
